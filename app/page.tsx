@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { AlertTriangle, MapPin, Bot, Play, Square, Activity } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { RSSDisplay } from "@/components/rss-display"
+import { InteractiveMap } from "@/components/interactive-map"
 
 interface AgentConfig {
   location: {
@@ -70,15 +71,15 @@ interface AgentInstance {
 export default function COASAGENTConfig() {
   const [config, setConfig] = useState<AgentConfig>({
     location: {
-      googleMapsPin: "",
+      googleMapsPin: "37.7749, -122.4194", // San Francisco default
       radiusKm: 420,
     },
     role: {
-      primaryRole: "",
-      focusTopic: "",
-      targetAudience: "",
-      searchPurpose: "",
-      dataPresentation: "",
+      primaryRole: "AI Research Analyst and Technology Consultant",
+      focusTopic: "Artificial Intelligence trends and applications in business",
+      targetAudience: "Technology professionals and business decision makers",
+      searchPurpose: "To identify emerging AI technologies and their practical business applications",
+      dataPresentation: "Structured insights with actionable recommendations and data points",
     },
     personalitySliders: {
       socialMood: 0,
@@ -90,23 +91,23 @@ export default function COASAGENTConfig() {
     contextOverride: "",
     outputFormat: "normal",
     dataSources: {
-      llm: false,
+      llm: true,
       internet: true,
-      reddit: false,
+      reddit: true,
       facebook: false,
-      twitter: false,
-      youtube: false,
+      twitter: true,
+      youtube: true,
       instagram: false,
     },
     modifiers: {
       hardFacts: false,
-      meaningFocus: false,
+      meaningFocus: true,
       suggestiveMode: false,
       strictGuidance: false,
-      laymanFriendly: false,
+      laymanFriendly: true,
       adultLanguage: false,
-      includeToolbox: false,
-      includeTips: false,
+      includeToolbox: true,
+      includeTips: true,
     },
   })
 
@@ -115,9 +116,9 @@ export default function COASAGENTConfig() {
   const [instances, setInstances] = useState<AgentInstance[]>([])
   const [loading, setLoading] = useState(false)
 
-  // Check for extreme slider combinations
-  const hasExtremeSliders = Object.values(config.personalitySliders).some((value) => Math.abs(value) > 7)
-  const hasMultipleExtremes = Object.values(config.personalitySliders).filter((value) => Math.abs(value) > 7).length > 1
+  const hasExtremeSliders = Object.values(config.personalitySliders).some((value) => Math.abs(value) > 7 && value !== 0)
+  const hasMultipleExtremes =
+    Object.values(config.personalitySliders).filter((value) => Math.abs(value) > 7 && value !== 0).length > 1
 
   const handleSliderChange = (key: keyof typeof config.personalitySliders, value: number[]) => {
     setConfig((prev) => ({
@@ -214,7 +215,6 @@ export default function COASAGENTConfig() {
   useEffect(() => {
     fetchAgentStatus()
 
-    // Poll for status updates every 30 seconds
     const interval = setInterval(fetchAgentStatus, 30000)
     return () => clearInterval(interval)
   }, [currentInstanceId])
@@ -226,7 +226,6 @@ export default function COASAGENTConfig() {
         const data = await response.json()
         setInstances(data.instances)
 
-        // Update current instance status
         if (currentInstanceId) {
           const currentInstance = data.instances.find((i: AgentInstance) => i.id === currentInstanceId)
           if (currentInstance) {
@@ -242,16 +241,18 @@ export default function COASAGENTConfig() {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
             <Bot className="h-8 w-8 text-primary" />
-            <h1 className="text-4xl font-bold text-foreground">COASAGENT</h1>
+            <h1 className="text-4xl font-bold text-foreground font-mono">COASAGENT</h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Configure your AI RSS Agent to scan the internet and daily RSS feeds with highly relevant context based on
             dynamic outputs
           </p>
+          <Badge variant="outline" className="bg-primary/10 text-primary border-primary">
+            EXPERIMENTAL LABS
+          </Badge>
         </div>
 
         {instances.length > 0 && (
@@ -297,10 +298,8 @@ export default function COASAGENTConfig() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Configuration Panel */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Geographic & Role Configuration */}
-            <Card>
+            <Card className="border-border/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
@@ -311,24 +310,21 @@ export default function COASAGENTConfig() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="location">Google Maps Pin (Optional)</Label>
-                    <Input
-                      id="location"
-                      placeholder="Enter location for focal point"
+                    <Label htmlFor="location">Google Maps Pin</Label>
+                    <InteractiveMap
                       value={config.location.googleMapsPin}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         setConfig((prev) => ({
                           ...prev,
-                          location: { ...prev.location, googleMapsPin: e.target.value },
+                          location: { ...prev.location, googleMapsPin: value },
                         }))
                       }
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="role">Bot Role (Optional)</Label>
+                    <Label htmlFor="role">Bot Role</Label>
                     <Input
                       id="role"
-                      placeholder="CPA and Devops engineer with hybrid roles"
                       value={config.role.primaryRole}
                       onChange={(e) =>
                         setConfig((prev) => ({
@@ -345,7 +341,6 @@ export default function COASAGENTConfig() {
                     <Label htmlFor="focus">Focus Area *</Label>
                     <Input
                       id="focus"
-                      placeholder="Accounting A.I. Apps and trends"
                       value={config.role.focusTopic}
                       onChange={(e) =>
                         setConfig((prev) => ({
@@ -357,10 +352,9 @@ export default function COASAGENTConfig() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="audience">Target Audience (Optional)</Label>
+                    <Label htmlFor="audience">Target Audience</Label>
                     <Input
                       id="audience"
-                      placeholder="Medium size accounting firm with a big family"
                       value={config.role.targetAudience}
                       onChange={(e) =>
                         setConfig((prev) => ({
@@ -377,7 +371,6 @@ export default function COASAGENTConfig() {
                     <Label htmlFor="purpose">Search Purpose *</Label>
                     <Input
                       id="purpose"
-                      placeholder="To help educate and raise awareness of the industry in/from web3"
                       value={config.role.searchPurpose}
                       onChange={(e) =>
                         setConfig((prev) => ({
@@ -389,10 +382,9 @@ export default function COASAGENTConfig() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="presentation">Data Presentation (Optional)</Label>
+                    <Label htmlFor="presentation">Data Presentation</Label>
                     <Input
                       id="presentation"
-                      placeholder="Succinct information, numbers and spreadsheets"
                       value={config.role.dataPresentation}
                       onChange={(e) =>
                         setConfig((prev) => ({
@@ -406,12 +398,11 @@ export default function COASAGENTConfig() {
               </CardContent>
             </Card>
 
-            {/* Personality Sliders */}
-            <Card>
+            <Card className="border-border/50">
               <CardHeader>
                 <CardTitle>Personality Configuration</CardTitle>
                 <CardDescription>
-                  Adjust the agent's personality traits (all default to 0, range -10 to +10)
+                  Adjust the agent's personality traits (0 = neutral/no effect, range -10 to +10)
                 </CardDescription>
                 {hasMultipleExtremes && (
                   <Alert>
@@ -520,7 +511,6 @@ export default function COASAGENTConfig() {
               </CardContent>
             </Card>
 
-            {/* Context Override */}
             <Card>
               <CardHeader>
                 <CardTitle>Context Override</CardTitle>
@@ -536,7 +526,6 @@ export default function COASAGENTConfig() {
               </CardContent>
             </Card>
 
-            {/* Output Format */}
             <Card>
               <CardHeader>
                 <CardTitle>Output Format</CardTitle>
@@ -584,8 +573,7 @@ export default function COASAGENTConfig() {
               </CardContent>
             </Card>
 
-            {/* Data Sources */}
-            <Card>
+            <Card className="border-border/50">
               <CardHeader>
                 <CardTitle>Deep Search Sources</CardTitle>
                 <CardDescription>Select which sources to perform deep dives on</CardDescription>
@@ -600,8 +588,9 @@ export default function COASAGENTConfig() {
                         onCheckedChange={(checked) =>
                           handleDataSourceChange(key as keyof typeof config.dataSources, checked as boolean)
                         }
+                        className="labs-checkbox"
                       />
-                      <Label htmlFor={key} className="capitalize">
+                      <Label htmlFor={key} className="capitalize text-sm">
                         {key}
                       </Label>
                     </div>
@@ -610,8 +599,7 @@ export default function COASAGENTConfig() {
               </CardContent>
             </Card>
 
-            {/* Condition Modifiers */}
-            <Card>
+            <Card className="border-border/50">
               <CardHeader>
                 <CardTitle>Condition Modifiers</CardTitle>
                 <CardDescription>Additional behavior modifiers for the agent</CardDescription>
@@ -623,6 +611,7 @@ export default function COASAGENTConfig() {
                       id="hardFacts"
                       checked={config.modifiers.hardFacts}
                       onCheckedChange={(checked) => handleModifierChange("hardFacts", checked as boolean)}
+                      className="labs-checkbox"
                     />
                     <Label htmlFor="hardFacts" className="text-sm">
                       Hard facts 🔒 <span className="text-muted-foreground">(Overrides all personality settings)</span>
@@ -633,6 +622,7 @@ export default function COASAGENTConfig() {
                       id="meaningFocus"
                       checked={config.modifiers.meaningFocus}
                       onCheckedChange={(checked) => handleModifierChange("meaningFocus", checked as boolean)}
+                      className="labs-checkbox"
                     />
                     <Label htmlFor="meaningFocus" className="text-sm">
                       Meaning focus
@@ -643,6 +633,7 @@ export default function COASAGENTConfig() {
                       id="suggestiveMode"
                       checked={config.modifiers.suggestiveMode}
                       onCheckedChange={(checked) => handleModifierChange("suggestiveMode", checked as boolean)}
+                      className="labs-checkbox"
                     />
                     <Label htmlFor="suggestiveMode" className="text-sm">
                       Suggestive mode
@@ -653,6 +644,7 @@ export default function COASAGENTConfig() {
                       id="strictGuidance"
                       checked={config.modifiers.strictGuidance}
                       onCheckedChange={(checked) => handleModifierChange("strictGuidance", checked as boolean)}
+                      className="labs-checkbox"
                     />
                     <Label htmlFor="strictGuidance" className="text-sm">
                       Strict guidance
@@ -663,6 +655,7 @@ export default function COASAGENTConfig() {
                       id="laymanFriendly"
                       checked={config.modifiers.laymanFriendly}
                       onCheckedChange={(checked) => handleModifierChange("laymanFriendly", checked as boolean)}
+                      className="labs-checkbox"
                     />
                     <Label htmlFor="laymanFriendly" className="text-sm">
                       Layman friendly
@@ -673,6 +666,7 @@ export default function COASAGENTConfig() {
                       id="adultLanguage"
                       checked={config.modifiers.adultLanguage}
                       onCheckedChange={(checked) => handleModifierChange("adultLanguage", checked as boolean)}
+                      className="labs-checkbox"
                     />
                     <Label htmlFor="adultLanguage" className="text-sm">
                       Adult language
@@ -683,6 +677,7 @@ export default function COASAGENTConfig() {
                       id="includeToolbox"
                       checked={config.modifiers.includeToolbox}
                       onCheckedChange={(checked) => handleModifierChange("includeToolbox", checked as boolean)}
+                      className="labs-checkbox"
                     />
                     <Label htmlFor="includeToolbox" className="text-sm">
                       Include TOP 10 Tools
@@ -693,6 +688,7 @@ export default function COASAGENTConfig() {
                       id="includeTips"
                       checked={config.modifiers.includeTips}
                       onCheckedChange={(checked) => handleModifierChange("includeTips", checked as boolean)}
+                      className="labs-checkbox"
                     />
                     <Label htmlFor="includeTips" className="text-sm">
                       Include TOP 10 Tips
@@ -702,7 +698,6 @@ export default function COASAGENTConfig() {
               </CardContent>
             </Card>
 
-            {/* Action Buttons */}
             <Card>
               <CardContent className="pt-6">
                 <div className="flex flex-wrap gap-4">
@@ -737,7 +732,6 @@ export default function COASAGENTConfig() {
             </Card>
           </div>
 
-          {/* RSS Output Panel */}
           <div className="space-y-6">
             <RSSDisplay selectedFormat={config.outputFormat} agentStatus={agentStatus} />
           </div>
