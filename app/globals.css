@@ -4,7 +4,44 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated to black/orange/white labs theme */
+  /* Light mode colors for Jedi theme */
+  --background: oklch(0.98 0 0); /* Light background */
+  --foreground: oklch(0.08 0 0); /* Dark text */
+  --card: oklch(0.95 0 0); /* Light gray cards */
+  --card-foreground: oklch(0.08 0 0); /* Dark card text */
+  --popover: oklch(0.95 0 0); /* Light popover */
+  --popover-foreground: oklch(0.08 0 0); /* Dark popover text */
+  --primary: oklch(0.65 0.25 45); /* Orange primary stays same */
+  --primary-foreground: oklch(0.98 0 0); /* White text on orange */
+  --secondary: oklch(0.92 0 0); /* Light gray secondary */
+  --secondary-foreground: oklch(0.08 0 0); /* Dark secondary text */
+  --muted: oklch(0.9 0 0); /* Light muted gray */
+  --muted-foreground: oklch(0.45 0 0); /* Gray muted text */
+  --accent: oklch(0.65 0.25 45); /* Orange accent */
+  --accent-foreground: oklch(0.98 0 0); /* White accent text */
+  --destructive: oklch(0.55 0.25 27); /* Red destructive */
+  --destructive-foreground: oklch(0.98 0 0); /* White destructive text */
+  --border: oklch(0.85 0 0); /* Light gray borders */
+  --input: oklch(0.95 0 0); /* Light input background */
+  --ring: oklch(0.65 0.25 45); /* Orange focus ring */
+  --chart-1: oklch(0.65 0.25 45); /* Orange charts */
+  --chart-2: oklch(0.08 0 0); /* Dark charts */
+  --chart-3: oklch(0.55 0 0); /* Gray charts */
+  --chart-4: oklch(0.95 0 0); /* Light chart backgrounds */
+  --chart-5: oklch(0.08 0 0); /* Dark chart text */
+  --radius: 0.375rem;
+  --sidebar: oklch(0.98 0 0); /* Light sidebar */
+  --sidebar-foreground: oklch(0.08 0 0); /* Dark sidebar text */
+  --sidebar-primary: oklch(0.65 0.25 45); /* Orange sidebar primary */
+  --sidebar-primary-foreground: oklch(0.98 0 0); /* White sidebar primary text */
+  --sidebar-accent: oklch(0.92 0 0); /* Light sidebar accent */
+  --sidebar-accent-foreground: oklch(0.08 0 0); /* Dark sidebar accent text */
+  --sidebar-border: oklch(0.85 0 0); /* Light sidebar borders */
+  --sidebar-ring: oklch(0.65 0.25 45); /* Orange sidebar focus */
+}
+
+.dark {
+  /* Dark mode uses Darth Vader theme colors */
   --background: oklch(0.08 0 0); /* Deep black background */
   --foreground: oklch(0.98 0 0); /* White text */
   --card: oklch(0.12 0 0); /* Dark gray cards */
@@ -29,7 +66,6 @@
   --chart-3: oklch(0.45 0 0); /* Gray charts */
   --chart-4: oklch(0.12 0 0); /* Dark chart backgrounds */
   --chart-5: oklch(0.98 0 0); /* White chart text */
-  --radius: 0.375rem; /* Slightly smaller radius for labs feel */
   --sidebar: oklch(0.08 0 0); /* Black sidebar */
   --sidebar-foreground: oklch(0.98 0 0); /* White sidebar text */
   --sidebar-primary: oklch(0.65 0.25 45); /* Orange sidebar primary */
@@ -38,42 +74,6 @@
   --sidebar-accent-foreground: oklch(0.98 0 0); /* White sidebar accent text */
   --sidebar-border: oklch(0.25 0 0); /* Gray sidebar borders */
   --sidebar-ring: oklch(0.65 0.25 45); /* Orange sidebar focus */
-}
-
-.dark {
-  /* Dark mode uses same colors for consistency */
-  --background: oklch(0.08 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.12 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.12 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.65 0.25 45);
-  --primary-foreground: oklch(0.08 0 0);
-  --secondary: oklch(0.18 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.15 0 0);
-  --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.65 0.25 45);
-  --accent-foreground: oklch(0.08 0 0);
-  --destructive: oklch(0.55 0.25 27);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.25 0 0);
-  --input: oklch(0.12 0 0);
-  --ring: oklch(0.65 0.25 45);
-  --chart-1: oklch(0.65 0.25 45);
-  --chart-2: oklch(0.98 0 0);
-  --chart-3: oklch(0.45 0 0);
-  --chart-4: oklch(0.12 0 0);
-  --chart-5: oklch(0.98 0 0);
-  --sidebar: oklch(0.08 0 0);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.65 0.25 45);
-  --sidebar-primary-foreground: oklch(0.08 0 0);
-  --sidebar-accent: oklch(0.18 0 0);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.25 0 0);
-  --sidebar-ring: oklch(0.65 0.25 45);
 }
 
 @theme inline {

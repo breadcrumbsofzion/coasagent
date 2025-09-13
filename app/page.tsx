@@ -14,6 +14,7 @@ import { AlertTriangle, MapPin, Bot, Play, Square, Activity } from "lucide-react
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { RSSDisplay } from "@/components/rss-display"
 import { InteractiveMap } from "@/components/interactive-map"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 interface AgentConfig {
   location: {
@@ -245,12 +246,15 @@ export default function COASAGENTConfig() {
           <div className="flex items-center justify-center gap-3">
             <Bot className="h-8 w-8 text-primary" />
             <h1 className="text-4xl font-bold text-foreground font-mono">COASAGENT</h1>
+            <div className="ml-4">
+              <ThemeToggle />
+            </div>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Configure your AI RSS Agent to scan the internet and daily RSS feeds with highly relevant context based on
             dynamic outputs
           </p>
-          <Badge variant="outline" className="bg-primary/10 text-primary border-primary">
+          <Badge variant="outline" className="bg-primary/20 text-background border-primary font-medium">
             EXPERIMENTAL LABS
           </Badge>
         </div>
