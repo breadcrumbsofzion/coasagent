@@ -46,6 +46,36 @@ export class AgentCore {
     }
   }
 
+  async generateContent(config: AgentConfig): Promise<string> {
+    try {
+      console.log(`[v0] Generating content for agent with config:`, config.role.primaryRole)
+
+      // For now, return a simple generated message
+      // In a full implementation, this would collect data and process it
+      const timestamp = new Date().toISOString()
+      const content = `AI Agent Report - ${timestamp}
+
+Role: ${config.role.primaryRole}
+Focus: ${config.role.focusTopic}
+Target Audience: ${config.role.targetAudience}
+
+This is a generated report from the COASAGENT system. The agent is running every 42 seconds and collecting data based on the configured parameters.
+
+Location: ${config.location.googleMapsPin} (${config.location.radiusKm}km radius)
+Data Sources: ${Object.entries(config.dataSources)
+        .filter(([_, enabled]) => enabled)
+        .map(([source]) => source)
+        .join(", ")}
+
+Status: Active and monitoring for relevant information.`
+
+      return content
+    } catch (error: any) {
+      console.error(`[v0] Error in generateContent:`, error.message)
+      return `Error generating content: ${error.message}`
+    }
+  }
+
   private combineAndPrioritizeData(data: ProcessedContent[], config: AgentConfig): string {
     // Sort by overall relevance score
     const sortedData = data.sort((a, b) => b.relevanceScores.overall - a.relevanceScores.overall)
@@ -73,5 +103,9 @@ export class AgentCore {
       currentModel: this.aiClient.getCurrentModel(),
       modelStatus: this.aiClient.getModelStatus(),
     }
+  }
+
+  getCurrentModel(): string {
+    return this.aiClient.getCurrentModel()
   }
 }

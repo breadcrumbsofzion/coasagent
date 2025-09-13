@@ -8,9 +8,17 @@ import { Suspense } from "react"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "v0 App",
-  description: "Created with v0",
+  title: "COASAGENT - AI RSS Agent Labs",
+  description:
+    "Configure your AI RSS Agent to scan the internet and daily RSS feeds with highly relevant context based on dynamic outputs. Experimental AI Labs project.",
   generator: "v0.app",
+  keywords: ["AI", "RSS", "Agent", "Machine Learning", "Data Collection", "Automation"],
+  authors: [{ name: "COASAGENT Labs" }],
+  openGraph: {
+    title: "COASAGENT - AI RSS Agent Labs",
+    description: "Configure your AI RSS Agent to scan the internet and daily RSS feeds with highly relevant context",
+    type: "website",
+  },
 }
 
 export default function RootLayout({

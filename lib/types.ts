@@ -40,29 +40,50 @@ export interface AgentConfig {
   }
 }
 
-export interface ProcessedContent {
-  id: string
-  source: string
-  timestamp: Date
-  rawContent: string
-  processedContent: string
-  relevanceScores: {
-    geographic: number
-    topic: number
-    overall: number
-  }
-  metadata: {
-    locationMentions: string[]
-    keyTopics: string[]
-    sentiment: number
-    technicalLevel: number
-  }
-}
-
 export interface AgentInstance {
   id: string
   config: AgentConfig
-  status: "running" | "stopped" | "error"
-  lastUpdate: Date
-  cronJob?: any
+  status: "idle" | "running" | "stopped" | "error"
+  createdAt: Date
+  lastRunAt?: Date
+  nextRunAt?: Date
+  runCount: number
+  intervalId?: NodeJS.Timeout
+}
+
+export interface AgentOutput {
+  id: string
+  instanceId: string
+  content: string
+  timestamp: Date
+  sources: string[]
+  metadata: {
+    model: string
+    processingTime: number
+    wordCount: number
+  }
+}
+
+export interface RSSItem {
+  title: string
+  description: string
+  link: string
+  pubDate: string
+  guid: string
+  category?: string
+  author?: string
+}
+
+export interface ProcessedContent {
+  title: string
+  content: string
+  summary: string
+  sources: string[]
+  timestamp: Date
+  metadata: {
+    wordCount: number
+    readingTime: number
+    topics: string[]
+    sentiment: "positive" | "neutral" | "negative"
+  }
 }

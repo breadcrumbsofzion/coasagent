@@ -1,7 +1,20 @@
+import { GeminiClient } from "./gemini-client"
+
 export class AIClient {
-  private models = ["gemini-pro", "gemini-flash", "gemini-nano"]
+  private geminiClient: GeminiClient | null = null
+  private models = ["gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash"]
   private currentModelIndex = 0
   private rateLimitCooldown: Record<string, number> = {}
+
+  constructor() {
+    const geminiApiKey = process.env.GEMINI_API_KEY
+    if (geminiApiKey) {
+      this.geminiClient = new GeminiClient(geminiApiKey)
+      console.log("[v0] Gemini API client initialized")
+    } else {
+      console.log("[v0] No Gemini API key found, using mock responses")
+    }
+  }
 
   async generateResponse(prompt: string, maxRetries = 3): Promise<string> {
     let attempts = 0
@@ -19,8 +32,9 @@ export class AIClient {
       try {
         console.log(`[v0] Attempting API call with model: ${model}`)
 
-        // Simulate API call - replace with actual Gemini API integration
-        const response = await this.makeAPICall(model, prompt)
+        const response = this.geminiClient
+          ? await this.geminiClient.generateContent(prompt)
+          : await this.makeAPICall(model, prompt)
 
         // Success - try to upgrade if possible
         this.upgradeModelIfPossible()
@@ -28,7 +42,7 @@ export class AIClient {
       } catch (error: any) {
         console.log(`[v0] API call failed with ${model}:`, error.message)
 
-        if (error.message.includes("rate_limit")) {
+        if (error.message.includes("rate_limit") || error.message.includes("quota")) {
           // Set cooldown for 5 minutes
           this.rateLimitCooldown[model] = Date.now() + 5 * 60 * 1000
           console.log(`[v0] Rate limit hit for ${model}, setting 5min cooldown`)

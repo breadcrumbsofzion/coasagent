@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       success: true,
       instanceId,
       status: instance?.status,
-      message: "Agent started successfully. It will run every 4.2 minutes.",
+      message: "Agent started successfully. It will run every 42 seconds.",
       rssUrl: `/api/rss/${config.outputFormat}`,
     })
   } catch (error: any) {
